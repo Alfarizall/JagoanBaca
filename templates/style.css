@@ -203,3 +203,58 @@ body {
   color: #000;
   cursor: pointer;
 }
+
+/* login */
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  background-color: #1e1e1e;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #ff9900;
+}
+
+.form-control {
+  background-color: #2b2b2b;
+  color: white;
+  border: 1px solid #ff9900;
+}
+
+.form-control::placeholder {
+  color: #bbb;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 5px #ff9900;
+  border-color: #ffbb66;
+  background-color: #2b2b2b;
+  color: white;
+}
+
+.btn-orange {
+  background-color: #ff9900;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 10px;
+}
+
+.btn-orange:hover {
+  background-color: #ffbb66;
+  color: #000;
+}
+
+.text-muted a {
+  color: #ffbb66;
+  text-decoration: none;
+}
+
+.text-muted a:hover {
+  text-decoration: underline;
+}
