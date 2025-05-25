@@ -58,5 +58,5 @@ public class MahasiswaController {
         repo.deleteById(nrp);
         return "redirect:/mahasiswa/";
     }
-    
+
 }

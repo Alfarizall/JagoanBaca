@@ -258,3 +258,31 @@ body {
 .text-muted a:hover {
   text-decoration: underline;
 }
+
+.trending-section {
+  background-color: #1e1e1e;
+  padding: 40px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 153, 0, 0.2);
+}
+
+.trending-section h2 {
+  text-align: center;
+  color: #fff;
+}
+
+.trending-card {
+  background-color: #2b2b2b;
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.trending-card:hover {
+  transform: scale(1.03);
+  background-color: #ffbb66;
+  color: #000;
+}
