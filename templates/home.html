@@ -18,23 +18,26 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link custom-nav-link active" href="#">Home</a></li>
-        <li class="nav-item"><a class="nav-link custom-nav-link" href="#">Trending</a></li>
+        <li class="nav-item"><a class="nav-link custom-nav-link" href="trending.html">Trending</a></li>
         <li class="nav-item"><a class="nav-link custom-nav-link" href="#">Pricing</a></li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle custom-nav-link" href="#" role="button" data-bs-toggle="dropdown">Genres</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Comedy</a></li>
-            <li><a class="dropdown-item" href="#">Mystery</a></li>
+            <li><a class="dropdown-item" href="gaction.html">Action</a></li>
+            <li><a class="dropdown-item" href="gcomedy.html">Comedy</a></li>
+            <li><a class="dropdown-item" href="gmystery.html">Mystery</a></li>
           </ul>
         </li>
       </ul>
-      <!-- Di Navbar -->
+      <!-- Tombol Login / Logout -->
       <div class="ms-auto">
-        <a href="#" class="btn btn-light btn-sm custom-nav-link" 
-          th:href="${session.user != null} ? '/logout' : '/login'">
-          <span th:text="${session.user != null} ? 'Logout' : 'Login'"></span>
-        </a>
+        <!-- Jika BELUM login -->
+        <a th:if="${not #httpServletRequest.remoteUser}" href="login.html" class="btn btn-light btn-sm custom-nav-link">Login</a>
+
+        <!-- Jika SUDAH login -->
+        <form th:if="${#httpServletRequest.remoteUser}" th:action="@{/logout}" method="post" style="display:inline;">
+          <button type="submit" class="btn btn-danger btn-sm custom-nav-link">Logout</button>
+        </form>
       </div>
     </div>
   </div>
