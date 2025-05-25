@@ -29,9 +29,13 @@
           </ul>
         </li>
       </ul>
-        <div class="ms-auto">
-            <a href="http://127.0.0.1:5500/templates/login.html" class="btn btn-light btn-sm custom-nav-link">Login</a>
-        </div>
+      <!-- Di Navbar -->
+      <div class="ms-auto">
+        <a href="#" class="btn btn-light btn-sm custom-nav-link" 
+          th:href="${session.user != null} ? '/logout' : '/login'">
+          <span th:text="${session.user != null} ? 'Logout' : 'Login'"></span>
+        </a>
+      </div>
     </div>
   </div>
 </nav>
