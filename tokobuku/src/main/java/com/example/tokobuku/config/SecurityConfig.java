@@ -33,20 +33,26 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
 
                 // hanya ADMIN boleh akses /admin/**
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                // semua yang login boleh akses buku
-                .requestMatchers("/books/**", "/").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/admin/**").hasRole("ADMIN")                // semua yang login boleh akses buku dan home
+                .requestMatchers("/books/**", "/home", "/").hasAnyRole("USER", "ADMIN")
 
                 // endpoint lainnya perlu login
                 .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
+            )            .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/books", true)
+                .successHandler((request, response, authentication) -> {
+                    // Check if user has ADMIN role
+                    if (authentication.getAuthorities().stream()
+                            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                        response.sendRedirect("/admin");
+                    } else {
+                        // For regular users (USER role)
+                        response.sendRedirect("/home");
+                    }
+                })
                 .permitAll()
             )
             .logout(logout -> logout

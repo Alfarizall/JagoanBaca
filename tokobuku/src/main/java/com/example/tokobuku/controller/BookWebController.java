@@ -1,59 +1,56 @@
 package com.example.tokobuku.controller;
 
 import com.example.tokobuku.model.Book;
-import com.example.tokobuku.model.Category;
-import com.example.tokobuku.repository.BookRepository;
+import com.example.tokobuku.service.BookService;
 import com.example.tokobuku.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/books")
 public class BookWebController {
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
 
     @Autowired
     private CategoryRepository categoryRepository;
 
     @GetMapping
     public String listBooks(Model model) {
-        List<Book> books = bookRepository.findAll();
-        List<Category> categories = categoryRepository.findAll();
-
-        model.addAttribute("books", books);
-        model.addAttribute("categories", categories);
-        model.addAttribute("bookForm", new Book());
-
-        return "books";  // nama file Thymeleaf: books.html
-    }
-
-    @PostMapping("/save")
-    public String saveBook(@ModelAttribute("bookForm") Book book) {
-        bookRepository.save(book);
-        return "redirect:/books";
+        model.addAttribute("books", bookService.getAllBooks());
+        return "books";
     }
 
     @GetMapping("/edit/{id}")
-    public String editBook(@PathVariable Long id, Model model) {
-        Book book = bookRepository.findById(id).orElse(new Book());
-        List<Category> categories = categoryRepository.findAll();
+    public String editBookForm(@PathVariable Long id, Model model) {
+        Book book = bookService.getBookById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
+        
+        model.addAttribute("book", book);
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "edit";
+    }
 
-        model.addAttribute("bookForm", book);
-        model.addAttribute("categories", categories);
-
-        return "books";
+    @PostMapping("/update")
+    public String updateBook(@ModelAttribute("book") Book book) {
+        bookService.saveBook(book);
+        return "redirect:/books";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteBook(@PathVariable Long id) {
-        bookRepository.deleteById(id);
+        bookService.deleteBook(id);
         return "redirect:/books";
+    }
+
+    @GetMapping("/add")
+    public String addBookForm(Model model) {
+        model.addAttribute("book", new Book());
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "edit";
     }
 }
 
