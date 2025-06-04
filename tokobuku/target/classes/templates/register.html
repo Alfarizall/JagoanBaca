@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Daftar Akun - Toko Buku</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<h2>Daftar Akun</h2>
+
+<form th:action="@{/register}" th:object="${user}" method="post">
+    <label>Nama Lengkap:</label><br>
+    <input type="text" th:field="*{fullName}" required/><br><br>
+
+    <label>Username:</label><br>
+    <input type="text" th:field="*{username}" required/><br><br>
+
+    <label>Password:</label><br>
+    <input type="password" th:field="*{password}" required/><br><br>
+
+    <button type="submit">Daftar</button>
+</form>
+
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+<p>Sudah punya akun? <a th:href="@{/login}">Login di sini</a></p>
+</body>
+</html>
