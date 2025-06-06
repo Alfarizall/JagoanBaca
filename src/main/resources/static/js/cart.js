@@ -77,9 +77,30 @@ document.addEventListener('DOMContentLoaded', function() {
             bootstrap.Modal.getInstance(modal).hide();
         });
     }
+
+    // Handle Buy Now button in modal
+    const buyNowBtn = document.getElementById('buyNowModal');
+    if (buyNowBtn) {
+        buyNowBtn.addEventListener('click', function() {
+            const modal = document.getElementById('bookDetailModal');
+            const bookId = modal.querySelector('.view-details').dataset.bookId;
+            const title = modal.querySelector('#bookTitle').textContent;
+            const price = parseFloat(modal.querySelector('#bookPrice').textContent.replace(/[^0-9]/g, ''));
+            const imageUrl = modal.querySelector('#bookImage').src;
+            const category = modal.querySelector('#bookCategory').textContent;
+            
+            addToCart(bookId, title, price, imageUrl, category, true);
+            bootstrap.Modal.getInstance(modal).hide();
+        });
+    }
 });
 
-function addToCart(bookId, title, price, imageUrl = '', category = '') {
+function addToCart(bookId, title, price, imageUrl = '', category = '', buyNow = false) {
+    if (buyNow) {
+        buyNow(bookId, title, price, imageUrl, category);
+        return;
+    }
+
     const existingItem = cart.find(item => item.id === bookId);
     
     if (existingItem) {
@@ -198,6 +219,15 @@ function saveCart() {
 }
 
 function loadCart() {
+    // Check for temporary cart from direct purchase
+    const tempCart = localStorage.getItem('tempCart');
+    if (tempCart) {
+        cart = JSON.parse(tempCart);
+        localStorage.removeItem('tempCart'); // Clear temporary cart
+        return;
+    }
+
+    // Load regular cart
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
         cart = JSON.parse(savedCart);

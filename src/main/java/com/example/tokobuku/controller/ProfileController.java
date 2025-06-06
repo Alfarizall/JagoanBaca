@@ -3,6 +3,7 @@ package com.example.tokobuku.controller;
 import com.example.tokobuku.model.User;
 import com.example.tokobuku.repository.UserRepository;
 import com.example.tokobuku.service.FavoriteService;
+import com.example.tokobuku.service.TransactionService;
 import com.example.tokobuku.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,16 +14,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/user/profile")
-public class ProfileController {    @Autowired
+public class ProfileController {
+    
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private FavoriteService favoriteService;
 
-    @GetMapping    public String viewProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+    @Autowired
+    private TransactionService transactionService;
+
+    @GetMapping    
+    public String viewProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         User user = userDetails.getUser();
         model.addAttribute("user", user);
         model.addAttribute("favorites", favoriteService.getUserFavorites(user));
+        model.addAttribute("transactions", transactionService.getUserTransactions(user.getUsername()));
         return "profile";
     }
 
@@ -37,15 +45,14 @@ public class ProfileController {    @Autowired
         if (!user.getUsername().equals(username)) {
             if (userRepository.findByUsername(username).isPresent()) {
                 redirectAttributes.addFlashAttribute("error", "Username sudah digunakan");
-                return "redirect:/profile";
+                return "redirect:/user/profile";
             }
         }
 
         user.setFullName(fullName);
         user.setUsername(username);
         userRepository.save(user);
-
         redirectAttributes.addFlashAttribute("success", "Profil berhasil diperbarui");
-        return "redirect:/profile";
+        return "redirect:/user/profile";
     }
 }
