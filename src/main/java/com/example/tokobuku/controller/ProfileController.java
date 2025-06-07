@@ -23,22 +23,24 @@ public class ProfileController {
     private FavoriteService favoriteService;
 
     @Autowired
-    private TransactionService transactionService;
-
-    @GetMapping    
+    private TransactionService transactionService;    @GetMapping    
     public String viewProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        System.out.println("Loading profile page");
+        if (userDetails == null) {
+            System.out.println("UserDetails is null");
+            return "redirect:/login";
+        }
         User user = userDetails.getUser();
         model.addAttribute("user", user);
         model.addAttribute("favorites", favoriteService.getUserFavorites(user));
         model.addAttribute("transactions", transactionService.getUserTransactions(user.getUsername()));
         return "profile";
-    }
-
-    @PostMapping("/update")
+    }    @PostMapping("/update")
     public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                               @RequestParam String fullName,
                               @RequestParam String username,
                               RedirectAttributes redirectAttributes) {
+        System.out.println("Processing profile update for user: " + username);
         User user = userDetails.getUser();
         
         // Check if username is being changed and is not already taken

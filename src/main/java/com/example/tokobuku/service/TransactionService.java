@@ -57,7 +57,7 @@ public class TransactionService {
                     .orElseThrow(() -> new IllegalArgumentException("Book not found"));
             
             if (book.getStock() < entry.getValue()) {
-                throw new IllegalStateException("Insufficient stock for book: " + book.getTitle());
+                throw new IllegalArgumentException("Stock tidak mencukupi untuk buku: " + book.getTitle());
             }
 
             TransactionItem item = new TransactionItem();
@@ -65,13 +65,15 @@ public class TransactionService {
             item.setBook(book);
             item.setQuantity(entry.getValue());
             item.setPrice(book.getPrice());
-
+            
             // Update book stock
             book.setStock(book.getStock() - entry.getValue());
             bookRepository.save(book);
-
-            transaction.getItems().add(item);
-            totalAmount = totalAmount.add(book.getPrice().multiply(new BigDecimal(entry.getValue())));
+            
+            // Calculate total
+            totalAmount = totalAmount.add(book.getPrice().multiply(BigDecimal.valueOf(entry.getValue())));
+            
+            transaction.addItem(item);
         }
 
         transaction.setTotalAmount(totalAmount);
