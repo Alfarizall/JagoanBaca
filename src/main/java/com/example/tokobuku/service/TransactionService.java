@@ -25,6 +25,10 @@ public class TransactionService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    public List<Transaction> getAllTransaction() {
+        return transactionRepository.findAll();
+    }
 
     public List<Transaction> getUserTransactions(String username) {
         User user = userRepository.findByUsername(username)
@@ -85,10 +89,10 @@ public class TransactionService {
                 .orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
     }
 
-    @Transactional
-    public Transaction updateTransactionStatus(Long id, TransactionStatus status) {
-        Transaction transaction = getTransactionById(id);
+    public void updateTransactionStatus(Long id, TransactionStatus status) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Transaksi tidak ditemukan"));
         transaction.setStatus(status);
-        return transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
     }
 }

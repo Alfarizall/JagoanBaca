@@ -8,13 +8,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.stereotype.Controller;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/api/transactions")
+@Controller
+@RequestMapping("/transactions")
 public class TransactionController {
 
     @Autowired
@@ -102,5 +104,14 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Gagal mengambil data transaksi");
         }
+    }
+
+    @PostMapping("/update-status/{id}")
+    public String updateTransactionStatus(@PathVariable Long id,
+                                @RequestParam("status") TransactionStatus status,
+                                RedirectAttributes redirectAttributes) {
+        transactionService.updateTransactionStatus(id, status);
+        redirectAttributes.addFlashAttribute("message", "Status transaksi berhasil diubah.");
+        return "redirect:/admin";
     }
 }
