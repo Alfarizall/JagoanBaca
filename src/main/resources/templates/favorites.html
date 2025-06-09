@@ -125,14 +125,17 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Handle remove favorite
-    document.querySelectorAll('.remove-favorite').forEach(button => {
-        button.addEventListener('click', function() {
+    document.querySelectorAll('.remove-favorite').forEach(button => {        button.addEventListener('click', function() {
             const bookId = this.dataset.bookId;
             if (confirm('Apakah Anda yakin ingin menghapus buku ini dari favorit?')) {
+                const csrfHeader = document.querySelector("meta[name='_csrf_header']")?.content;
+                const csrfToken = document.querySelector("meta[name='_csrf']")?.content;
+                
                 fetch(`/favorites/${bookId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        ...(csrfHeader && { [csrfHeader]: csrfToken })
                     }
                 }).then(response => {
                     if (response.ok) {

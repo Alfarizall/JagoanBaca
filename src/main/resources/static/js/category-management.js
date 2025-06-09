@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Get CSRF token
+    function getCsrfHeaders() {
+        const token = document.querySelector('meta[name="_csrf"]');
+        const header = document.querySelector('meta[name="_csrf_header"]');
+        if (token && header) {
+            return {
+                [header.getAttribute('content')]: token.getAttribute('content')
+            };
+        }
+        return {};
+    }
+
     // Add Category Form Handler
     const addCategoryForm = document.getElementById('addCategoryForm');
     if (addCategoryForm) {
@@ -7,12 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(addCategoryForm);
             const categoryData = {
                 name: formData.get('name')
-            };
-
-            fetch('/api/categories', {
-                method: 'POST',
-                headers: {
+            };            fetch('/api/categories', {
+                method: 'POST',                headers: {
                     'Content-Type': 'application/json',
+                    ...getCsrfHeaders()
                 },
                 body: JSON.stringify(categoryData)
             })

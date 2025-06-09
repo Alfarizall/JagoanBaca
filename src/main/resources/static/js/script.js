@@ -154,15 +154,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add favorite functionality
     function checkFavoriteStatus(bookId) {
-        const favoriteBtn = document.getElementById('toggleFavorite');
-        fetch(`/favorites/check/${bookId}`)
-            .then(response => response.json())
-            .then(isFavorite => {
-                updateFavoriteButton(isFavorite);
-            })
-            .catch(() => {
-                // Handle error silently
-            });
+        const csrfHeader = document.querySelector("meta[name='_csrf_header']")?.content;
+        const csrfToken = document.querySelector("meta[name='_csrf']")?.content;
+
+        fetch(`/favorites/check/${bookId}`, {
+            headers: {
+                ...(csrfHeader && { [csrfHeader]: csrfToken })
+            }
+        })
+        .then(response => response.json())
+        .then(isFavorite => {
+            updateFavoriteButton(isFavorite);
+        })
+        .catch(() => {
+            // Handle error silently
+        });
     }
 
     // Add to Cart functionality
@@ -184,18 +190,20 @@ document.addEventListener('DOMContentLoaded', function() {
             bookDetailModal.hide();
             window.location.href = '/checkout';
         });
-    }
-
-    // Handle favorite button clicks
+    }    // Handle favorite button clicks
     const favoriteBtn = document.getElementById('toggleFavorite');
     if (favoriteBtn) {
         favoriteBtn.addEventListener('click', function() {
             if (!currentBook) return;
             
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']")?.content;
+            const csrfToken = document.querySelector("meta[name='_csrf']")?.content;
+            
             fetch(`/favorites/toggle/${currentBook.id}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...(csrfHeader && { [csrfHeader]: csrfToken })
                 }
             })
             .then(response => response.json())

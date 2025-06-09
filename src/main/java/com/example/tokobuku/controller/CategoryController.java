@@ -1,8 +1,9 @@
 package com.example.tokobuku.controller;
 
 import com.example.tokobuku.model.Category;
-import com.example.tokobuku.repository.CategoryRepository;
+import com.example.tokobuku.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,44 +13,75 @@ import java.util.List;
 public class CategoryController {
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
 
-    // Get all categories
     @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public ResponseEntity<List<Category>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
-    // Get category by ID
     @GetMapping("/{id}")
-    public Category getCategoryById(@PathVariable Long id) {
-        return categoryRepository.findById(id).orElse(null);
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+        Category category = categoryService.getCategoryById(id);
+        if (category == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(category);
     }
 
-    // Add new category
     @PostMapping
-    public Category createCategory(@RequestBody Category category) {
-        return categoryRepository.save(category);
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        if (category.getName() == null || category.getName().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            Category savedCategory = categoryService.saveCategory(category);
+            return ResponseEntity.ok(savedCategory);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    // Update category
-    @PostMapping("/{id}")
-    public Category updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
-        return categoryRepository.findById(id).map(category -> {
-            category.setName(updatedCategory.getName());
-            return categoryRepository.save(category);
-        }).orElse(null);
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
+        if (updatedCategory.getName() == null || updatedCategory.getName().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            Category existingCategory = categoryService.getCategoryById(id);
+            if (existingCategory == null) {
+                return ResponseEntity.notFound().build();
+            }
+            existingCategory.setName(updatedCategory.getName());
+            Category savedCategory = categoryService.saveCategory(existingCategory);
+            return ResponseEntity.ok(savedCategory);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    // Delete category
     @DeleteMapping("/{id}")
-    public void deleteCategory(@PathVariable Long id) {
-        categoryRepository.deleteById(id);
-    }
-
-    // Get category by name (opsional)
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        try {
+            Category category = categoryService.getCategoryById(id);
+            if (category == null) {
+                return ResponseEntity.notFound().build();
+            }
+            if (category.getBooks() != null && !category.getBooks().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            categoryService.deleteCategory(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }    // Get category by name (opsional)
     @GetMapping("/search")
-    public Category getCategoryByName(@RequestParam String name) {
-        return categoryRepository.findByName(name);
+    public ResponseEntity<Category> getCategoryByName(@RequestParam String name) {
+        Category category = categoryService.getCategoryByName(name);
+        if (category == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(category);
     }
 }

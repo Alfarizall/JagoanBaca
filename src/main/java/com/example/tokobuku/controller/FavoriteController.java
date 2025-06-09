@@ -20,6 +20,13 @@ public class FavoriteController {
 
     @Autowired
     private BookService bookService;
+    
+    @GetMapping("/check/{bookId}")
+    @ResponseBody
+    public boolean checkFavorite(@PathVariable Long bookId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
+        return favoriteService.existsByUserAndBookId(user, bookId);
+    }
 
     @GetMapping
     public String getFavorites(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
