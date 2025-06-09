@@ -10,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Controller
 @RequestMapping("/favorites")
@@ -41,10 +43,9 @@ public class FavoriteController {
                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
         User user = userDetails.getUser();
         return favoriteService.toggleFavorite(user, bookService.getBookById(bookId).get());
-    }
-
-    @DeleteMapping("/{bookId}")
+    }    @DeleteMapping("/{bookId}")
     @ResponseBody
+    @Transactional
     public void removeFavorite(@PathVariable Long bookId, 
                              @AuthenticationPrincipal CustomUserDetails userDetails) {
         User user = userDetails.getUser();

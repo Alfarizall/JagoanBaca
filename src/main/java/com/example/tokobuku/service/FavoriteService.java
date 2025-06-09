@@ -13,10 +13,12 @@ import java.util.List;
 public class FavoriteService {
 
     @Autowired
-    private FavoriteRepository favoriteRepository;
-
-    public List<Favorite> getUserFavorites(User user) {
+    private FavoriteRepository favoriteRepository;    public List<Favorite> getUserFavorites(User user) {
         return favoriteRepository.findByUser(user);
+    }
+
+    public boolean existsByUserAndBookId(User user, Long bookId) {
+        return favoriteRepository.existsByUserAndBookId(user, bookId);
     }
 
     public boolean toggleFavorite(User user, Book book) {
@@ -30,10 +32,13 @@ public class FavoriteService {
             favoriteRepository.save(favorite);
             return true; // Added to favorites
         }
-    }
-
-    @Transactional
+    }    @Transactional
     public void removeFavorite(User user, Long bookId) {
-        favoriteRepository.deleteByUserAndBookId(user, bookId);
+        // First find the favorite entry
+        List<Favorite> favorites = favoriteRepository.findByUser(user);
+        favorites.stream()
+                .filter(f -> f.getBook().getId().equals(bookId))
+                .findFirst()
+                .ifPresent(favorite -> favoriteRepository.delete(favorite));
     }
 }
