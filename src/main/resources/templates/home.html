@@ -20,13 +20,19 @@
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link custom-nav-link active" href="#">Home</a></li>
         <li class="nav-item"><a class="nav-link custom-nav-link" href="trending.html">Trending</a></li>
-        <li class="nav-item"><a class="nav-link custom-nav-link" href="#">Pricing</a></li>
-        <li class="nav-item dropdown">
+        <li class="nav-item"><a class="nav-link custom-nav-link" href="#">Pricing</a></li>        <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle custom-nav-link" href="#" role="button" data-bs-toggle="dropdown">Genres</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Comedy</a></li>
-            <li><a class="dropdown-item" href="#">Mystery</a></li>
+            <li><a class="dropdown-item" th:href="@{/home}">All Categories</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li th:each="category : ${categories}">
+              <a class="dropdown-item" 
+                 th:href="@{/home(categoryId=${category.id})}" 
+                 th:text="${category.name}"
+                 th:class="${category.id == selectedCategory ? 'dropdown-item active' : 'dropdown-item'}">
+                Category Name
+              </a>
+            </li>
           </ul>
         </li>
       </ul>

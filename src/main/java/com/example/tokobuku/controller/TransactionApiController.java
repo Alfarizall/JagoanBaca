@@ -8,15 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
-public class TransactionController {
+@RequestMapping("/api/transactions")
+public class TransactionApiController {
 
     @Autowired
     private TransactionService transactionService;
@@ -102,18 +101,6 @@ public class TransactionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Gagal mengambil data transaksi");
-        }
-    }    @PostMapping("/update-status/{id}")
-    public ResponseEntity<?> updateTransactionStatus(
-            @PathVariable Long id,
-            @RequestParam("status") TransactionStatus status) {
-        try {
-            transactionService.updateTransactionStatus(id, status);
-            return ResponseEntity.ok()
-                    .body(Map.of("message", "Status transaksi berhasil diubah"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Gagal mengubah status transaksi"));
         }
     }
 }

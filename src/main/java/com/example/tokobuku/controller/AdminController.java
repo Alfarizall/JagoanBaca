@@ -1,7 +1,10 @@
 package com.example.tokobuku.controller;
 
+import com.example.tokobuku.model.Book;
+import com.example.tokobuku.model.Category;
 import com.example.tokobuku.model.User;
 import com.example.tokobuku.service.BookService;
+import com.example.tokobuku.service.CategoryService;
 import com.example.tokobuku.service.TransactionService;
 import com.example.tokobuku.service.UserService;
 
@@ -18,12 +21,15 @@ public class AdminController {
     private final BookService bookService;
     private final TransactionService transactionService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public AdminController(BookService bookService, TransactionService transactionService, UserService userService) {
+    public AdminController(BookService bookService, TransactionService transactionService, 
+                         UserService userService, CategoryService categoryService) {
         this.bookService = bookService;
         this.transactionService = transactionService;
         this.userService = userService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -31,6 +37,7 @@ public class AdminController {
         model.addAttribute("books", bookService.getAllBooks());
         model.addAttribute("transactions", transactionService.getAllTransaction());
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("message", "Selamat datang di halaman Admin!");
         return "admin";
     }

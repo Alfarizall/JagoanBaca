@@ -54,9 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }))
             };
 
-            console.log('Sending order data:', JSON.stringify(orderData, null, 2));
-
-            // Send order to server
+            console.log('Sending order data:', JSON.stringify(orderData, null, 2));            // Send order to server
             const response = await fetch('/api/transactions', {
                 method: 'POST',
                 headers: {

@@ -29,8 +29,9 @@
                         <i class="fas fa-bars"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="fas fa-user me-2"></i>Profile</a></li>
-                        <li><a class="dropdown-item active" th:href="@{/favorites}"><i class="fas fa-heart me-2"></i>Favorit</a></li>
+                        <li><a class="dropdown-item" th:href="@{/user/profile}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/favorites}"><i class="fas fa-heart me-2"></i>Favorit</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cart}"><i class="fas fa-shopping-cart me-2"></i>Keranjang</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form th:action="@{/logout}" method="post" class="dropdown-item">

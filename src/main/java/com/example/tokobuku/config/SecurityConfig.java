@@ -37,7 +37,7 @@ public class SecurityConfig {
 
                 // hanya ADMIN boleh akses /admin/**
                 .requestMatchers("/admin/**").hasRole("ADMIN")                // semua yang login boleh akses buku, home, dan checkout
-                .requestMatchers("/books/**", "/home", "/", "/checkout/**", "/api/transactions/**", "/user/profile/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/books/**", "/home", "/", "/checkout/**", "/api/**", "/user/profile/**").hasAnyRole("USER", "ADMIN")
 
                 // endpoint lainnya perlu login
                 .anyRequest().authenticated()
