@@ -159,3 +159,82 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Transaction Status Update
+document.addEventListener('DOMContentLoaded', function() {
+    // Get CSRF token
+    const csrfToken = document.querySelector("meta[name='_csrf']");
+    const csrfHeader = document.querySelector("meta[name='_csrf_header']");
+    
+    if (!csrfToken || !csrfHeader) {
+        console.error('CSRF tokens not found');
+        return;
+    }
+
+    const token = csrfToken.getAttribute("content");
+    const header = csrfHeader.getAttribute("content");
+
+    // Add event listeners to all update buttons
+    document.querySelectorAll('.update-status-btn').forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const transactionId = this.getAttribute('data-transaction-id');
+            const row = this.closest('tr');
+            const select = row.querySelector('.status-select');
+            const statusCell = row.querySelector('.status-cell');
+            const newStatus = select.value;
+
+            try {
+                const response = await fetch(`/api/transactions/${transactionId}/status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [header]: token
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Update the status cell
+                statusCell.textContent = newStatus;
+                
+                // Show success message
+                const alertContainer = document.querySelector('.container.mt-3');
+                const successAlert = document.createElement('div');
+                successAlert.className = 'alert alert-success alert-dismissible fade show';
+                successAlert.innerHTML = `
+                    Status berhasil diperbarui menjadi ${newStatus}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                alertContainer.appendChild(successAlert);
+                
+                // Remove alert after 3 seconds
+                setTimeout(() => {
+                    successAlert.remove();
+                }, 3000);
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Show error message
+                const alertContainer = document.querySelector('.container.mt-3');
+                const errorAlert = document.createElement('div');
+                errorAlert.className = 'alert alert-danger alert-dismissible fade show';
+                errorAlert.innerHTML = `
+                    Gagal memperbarui status: ${error.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                alertContainer.appendChild(errorAlert);
+                
+                // Remove alert after 3 seconds
+                setTimeout(() => {
+                    errorAlert.remove();
+                }, 3000);
+            }
+        });
+    });
+});

@@ -71,23 +71,22 @@
                                         <th>T_Date</th>
                                         <th>Aksi</th>
                                     </tr>
-                                </thead>
-                                <tbody>                                <tr th:each="transaction : ${transactions}">
-                                        <form class="transaction-status-form" th:data-transaction-id="${transaction.id}">
+                                </thead>                                <tbody>
+                                    <tr th:each="transaction : ${transactions}">
                                             <td th:text="${transaction.id}">1</td>
                                             <td th:text="${transaction.user.id}">1</td>
                                             <td th:text="${transaction.customerAddress}">Alamat Pelanggan</td>
                                             <td th:text="${transaction.customerName}">Nama Pelanggan</td>
                                             <td th:text="${transaction.customerPhone}">Nomor Telepon Pelanggan</td>
-                                            <td th:text="${transaction.paymentMethod}">Metode Pembayaran</td>
-                                            <td class="status-cell" th:text="${transaction.status}">Status</td>
+                                            <td th:text="${transaction.paymentMethod}">Metode Pembayaran</td>                                            <td class="status-cell" th:text="${transaction.status}">Status</td>
                                             
                                             <td>
-                                                <select name="status" class="form-select form-select-sm">
-                                                    <option th:value="PENDING" th:selected="${transaction.status == 'PENDING'}">PENDING</option>
-                                                    <option th:value="PAID" th:selected="${transaction.status == 'PAID'}">PAID</option>
-                                                    <option th:value="FAILED" th:selected="${transaction.status == 'FAILED'}">FAILED</option>
-                                                    <option th:value="CANCELLED" th:selected="${transaction.status == 'CANCELLED'}">CANCELLED</option>
+                                                <select class="form-select form-select-sm status-select" 
+                                                        th:data-transaction-id="${transaction.id}">
+                                                    <option value="PENDING" th:selected="${transaction.status == 'PENDING'}">PENDING</option>
+                                                    <option value="PAID" th:selected="${transaction.status == 'PAID'}">PAID</option>
+                                                    <option value="FAILED" th:selected="${transaction.status == 'FAILED'}">FAILED</option>
+                                                    <option value="CANCELLED" th:selected="${transaction.status == 'CANCELLED'}">CANCELLED</option>
                                                 </select>
                                             </td>
                                             
@@ -95,9 +94,12 @@
                                             <td th:text="${#temporals.format(transaction.transactionDate, 'dd/MM/yyyy HH:mm:ss')}">Tanggal Transaksi</td>
 
                                             <td>
-                                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                                <button type="button" class="btn btn-sm btn-primary update-status-btn" 
+                                                        th:data-transaction-id="${transaction.id}">
+                                                    Update
+                                                </button>
                                             </td>
-                                        </form>
+                                    </tr>
                                     </tr>
                                 </tbody>
                             </table>
