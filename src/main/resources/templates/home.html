@@ -65,23 +65,13 @@
 <main class="content">
   <section class="highlight-container">
     <div class="highlight-wrapper">
-      <div class="highlight">
-        <h2>ONE PIECE</h2>
-        <p><strong>OCT 20, 1999 TO ?</strong></p>
-        <p>Action, Adventure, Fantasy</p>
-        <p class="summary">The famous Pirate King Gold Roger...</p>
-      </div>
-      <div class="highlight">
-        <h2>NARUTO</h2>
-        <p><strong>OCT 3, 2002 TO FEB 8, 2007</strong></p>
-        <p>Action, Ninja, Adventure</p>
-        <p class="summary">Follow Naruto Uzumaki's journey...</p>
-      </div>
-      <div class="highlight">
-        <h2>DEMON SLAYER</h2>
-        <p><strong>APR 6, 2019 TO ?</strong></p>
-        <p>Action, Supernatural, Historical</p>
-        <p class="summary">A young boy becomes a demon slayer...</p>
+      <div class="highlight" th:each="book, iterStat : ${books}" th:style="${'background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(' + (book.imageUrl != null ? book.imageUrl : '/img/default-book.jpg') + ')'}">
+        <div class="highlight-content">
+          <h2 th:text="${book.title}">Judul Buku</h2>
+          <p><strong th:text="${book.author}">Pengarang</strong></p>
+          <p th:text="${book.category != null ? book.category.name : 'Umum'}">Kategori</p>
+          <p class="summary" th:text="${#strings.abbreviate(book.description, 150)}">Deskripsi singkat buku...</p>
+        </div>
       </div>
     </div>
   </section>

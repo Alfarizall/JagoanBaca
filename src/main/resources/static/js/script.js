@@ -241,3 +241,65 @@ function showNotification(message, type = 'success') {
     alert(message);
 }
 
+// Slidebar functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const wrapper = document.querySelector('.highlight-wrapper');
+    if (!wrapper) return;
+
+    const slides = wrapper.querySelectorAll('.highlight');
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+
+    // Set initial position
+    updateSlidePosition();
+
+    // Auto slide every 5 seconds
+    setInterval(() => {
+        moveSlide(1);
+    }, 5000);
+
+    // Function to update slide position
+    function updateSlidePosition() {
+        wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    // Function to move slides
+    window.moveSlide = function(direction) {
+        currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+        updateSlidePosition();
+    };
+
+    // Touch and drag functionality
+    let startX;
+    let isDragging = false;
+    let startPos = 0;
+    
+    wrapper.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+        startPos = currentSlide;
+    });
+
+    wrapper.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        const currentX = e.touches[0].clientX;
+        const diff = (startX - currentX) / wrapper.offsetWidth;
+        const newPosition = startPos + diff;
+        
+        wrapper.style.transform = `translateX(-${newPosition * 100}%)`;
+    });
+
+    wrapper.addEventListener('touchend', (e) => {
+        isDragging = false;
+        const diff = (startX - e.changedTouches[0].clientX) / wrapper.offsetWidth;
+        
+        if (Math.abs(diff) > 0.2) {
+            moveSlide(Math.sign(diff));
+        } else {
+            currentSlide = startPos;
+            updateSlidePosition();
+        }
+    });
+});
+
