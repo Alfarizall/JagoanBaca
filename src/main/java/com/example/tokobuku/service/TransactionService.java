@@ -95,4 +95,18 @@ public class TransactionService {
         transaction.setStatus(status);
         transactionRepository.save(transaction);
     }
+
+    @Transactional
+    public Transaction updateTransactionStatus(Long id, String statusStr) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Transaksi tidak ditemukan"));
+        
+        try {
+            TransactionStatus status = TransactionStatus.valueOf(statusStr.toUpperCase());
+            transaction.setStatus(status);
+            return transactionRepository.save(transaction);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Status transaksi tidak valid: " + statusStr);
+        }
+    }
 }

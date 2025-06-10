@@ -103,4 +103,33 @@ public class TransactionApiController {
                     .body("Gagal mengambil data transaksi");
         }
     }
+
+    @PostMapping("/{id}/status")
+    public ResponseEntity<?> updateTransactionStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> request) {
+        try {
+            String newStatus = request.get("status");
+            if (newStatus == null) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Status tidak boleh kosong"));
+            }
+
+            Transaction transaction = transactionService.updateTransactionStatus(id, newStatus);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", transaction.getId());
+            response.put("status", transaction.getStatus());
+            response.put("message", "Status transaksi berhasil diperbarui");
+            
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Terjadi kesalahan saat memperbarui status transaksi"));
+        }
+    }
 }
