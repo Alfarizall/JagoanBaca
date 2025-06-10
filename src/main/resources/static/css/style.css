@@ -166,7 +166,7 @@ body {
 
 .card:hover {
   transform: scale(1.05);
-  background-color: #ffbb66;
+  background-color: #2b2b2b;
   color: #000;
 }
 
